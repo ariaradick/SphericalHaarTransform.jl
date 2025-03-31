@@ -1,5 +1,7 @@
 module SphericalHaarTransform
 
+export sph_haar_transform
+
 using QuadGK
 using FastSphericalHarmonics
 # using Healpix
@@ -18,7 +20,7 @@ function sph_haar_transform(f, nmax, ellmax, umax; method=:twopt,
 
     Fp = zeros(size(F))
     for i in 1:size(F)[1]
-        Fp[i,:,:] = sph_transform(F[i,:,:])
+        @views Fp[i,:,:] = sph_transform(F[i,:,:])
     end
 
     for k in 1:size(F)[3]

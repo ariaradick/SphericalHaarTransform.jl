@@ -44,7 +44,7 @@ end
 
 function _eval_rint_n!(y, f, x, umax, θ, φ; rtol=1e-6)
     for i in eachindex(x)[1:end-1]
-        y[i] = quadgk(z -> z^2*f([z*umax, θ, φ]), x[i], x[i+1]; rtol=rtol)
+        y[i] = quadgk(z -> z^2*f([z*umax, θ, φ]), x[i], x[i+1]; rtol=rtol)[1]
     end
 end
 
@@ -52,21 +52,25 @@ function _eval_rint!(y, f, x, umax, th, ph; method=:twopt, rtol_gquad=1e-6)
     if method == :twopt
         for j in eachindex(ph)
             for i in eachindex(th)
-                _eval_rint_2!(y[:,i,j], f, x, umax, th[i], ph[j])
+                @views _eval_rint_2!(y[:,i,j], f, x, umax, th[i], ph[j])
             end
         end
     elseif method == :onept
         for j in eachindex(ph)
             for i in eachindex(th)
-                _eval_rint_1!(y[:,i,j], f, x, umax, th[i], ph[j])
+                @views _eval_rint_1!(y[:,i,j], f, x, umax, th[i], ph[j])
             end
         end
     elseif method == :npt
         for j in eachindex(ph)
             for i in eachindex(th)
-                _eval_rint_n!(y[:,i,j], f, x, umax, th[i], ph[j]; 
+                @views _eval_rint_n!(y[:,i,j], f, x, umax, th[i], ph[j]; 
                               rtol=rtol_gquad)
             end
         end
     end
+end
+
+function sph_haar_index(n,ell,m)
+    return CartesianIndex(n, sph_mode(ell,m)...)
 end
