@@ -180,7 +180,7 @@ end
 Performs the Haar transform on vector `x` (with length `2^ngen`) with weighting
 factor `r^2` and stores the results in `x`.
 """
-function discrete_haar_3D!(x)
+function haar3D_transform!(x)
     ngen = exponent(length(x))
     intg = zeros(Float64, (2^ngen, ngen+1))
     intg[:,end] = x[:]
@@ -192,4 +192,32 @@ function discrete_haar_3D!(x)
     for i in ngen:-1:1
         @views psum!(x[2^(i-1)+1:2^(i)], intg[1:2^i,i+1])
     end
+end
+
+function haar3D_transform(x)
+    y = zeros(size(x))
+    y[:] = x[:]
+    haar3D_transform!(y)
+    return y
+end
+
+function haar3D_inverse!(y,x)
+    ngen = exponent(length(x))
+    @. y += x[1]*hcoefs[1,1]
+    n = 1
+    for λ in 0:(ngen-1)
+        steplen = 2^(ngen-λ)
+        steplen_h = 2^(ngen-λ-1)
+        for μ in 0:(2^λ-1)
+            @. y[μ*steplen+1:(2μ+1)*steplen_h] += hcoefs[2μ+1,λ+2]*x[n+1]
+            @. y[((2μ+1)*steplen_h+1):(μ+1)*steplen] += hcoefs[2μ+2,λ+2]*x[n+1]
+            n+=1
+        end
+    end
+end
+
+function haar3D_inverse(x)
+    y = zeros(length(x))
+    haar3D_inverse!(y,x)    
+    return y
 end
