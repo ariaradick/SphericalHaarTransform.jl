@@ -1,7 +1,7 @@
 name = "SphericalHaarTransform"
 uuid = "f82b2a20-12c9-425c-bdb8-e1eabd25f0c2"
 authors = ["Aria Radick"]
-version = "0.1.0-DEV"
+version = "0.1.0"
 
 [deps]
 FastSphericalHarmonics = "d335c211-7587-445e-a753-f0b1fb7e445f"
