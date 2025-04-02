@@ -8,7 +8,7 @@ $$
 f_{n \ell m} = \int d^3 u f(\vec{u}) h_n(u/u_{\textrm{max}}) Y_{\ell m}(\hat{u})
 $$
 
-This package uses `FastSphericalHarmonics.jl` to compute the spherical harmonic transform and inverse.
+This package uses [`FastSphericalHarmonics.jl`](https://github.com/eschnett/FastSphericalHarmonics.jl) to compute the spherical harmonic transform and inverse.
 
 One can transform a function by calling
 ```jl
