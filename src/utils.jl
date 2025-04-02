@@ -75,10 +75,22 @@ function sph_haar_index(n,ell,m)
     return CartesianIndex(n, sph_mode(ell,m)...)
 end
 
-function sph_haar_points(nmax,ellmax)
+function sph_haar_points(nmax,ellmax,umax)
     ngen = _n_gens(nmax)
     xi = 0:(2.0^(-ngen)):1
-    xs = _xbari3.(xi[1:end-1], xi[2:end])
+    us = @. umax*_xbari3(xi[1:end-1], xi[2:end])
     ths, phs = sph_points(ellmax+1)
-    return (xs, ths, phs)
+    return (us, ths, phs)
+end
+
+function evaluate_f(f,u,θ,φ)
+    res = zeros(length(u), length(θ), length(φ))
+    for k in eachindex(φ)
+        for j in eachindex(θ)
+            for i in eachindex(u)
+                res[i,j,k] = f([u[i],θ[j],φ[k]])
+            end
+        end
+    end
+    return res
 end
