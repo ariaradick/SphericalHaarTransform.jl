@@ -25,3 +25,8 @@ us, θs, φs = sph_haar_points(nmax,ellmax)
 F = evaluate_f(f, us, θs, φs)
 Fp = sph_haar_transform(F)
 ```
+
+To access a specific (n,ell,m) coefficient use
+```jl
+Fp[sph_haar_index(n,ell,m)]
+```
