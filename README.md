@@ -21,7 +21,7 @@ F = sph_haar_inverse(Fp)
 
 One can also precompute the function on a grid,
 ```jl
-us, θs, φs = sph_haar_points(nmax,ellmax)
+us, θs, φs = sph_haar_points(nmax,ellmax,umax)
 F = evaluate_f(f, us, θs, φs)
 Fp = sph_haar_transform(F)
 ```
