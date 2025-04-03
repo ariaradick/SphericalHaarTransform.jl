@@ -72,7 +72,7 @@ function _eval_rint!(y, f, x, umax, th, ph; method=:twopt, rtol_gquad=1e-6)
 end
 
 function sph_haar_index(n,ell,m)
-    return CartesianIndex(n, sph_mode(ell,m)...)
+    return CartesianIndex(n+1, sph_mode(ell,m)...)
 end
 
 function sph_haar_points(nmax,ellmax,umax)
