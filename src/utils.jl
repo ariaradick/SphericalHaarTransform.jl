@@ -5,8 +5,37 @@ function psum!(res,v)
     end
 end
 
-const GL1 = 1/sqrt(3)
-const GL2 = -1/sqrt(3)
+const GL1 = -1/sqrt(3)
+const GL2 = 1/sqrt(3)
+
+function _x_eval_2pt(a,b)
+    xm = 0.5*(b-a)
+    xp = 0.5*(b+a)
+
+    x1 = xm*GL1 + xp
+    x2 = xm*GL2 + xp
+
+    return x1,x2
+end
+
+function _x_eval_2pt!(x,u)
+    for i in eachindex(u)[1:end-1]
+        a = u[i]
+        b = u[i+1]
+
+        xm = 0.5*(b-a)
+        xp = 0.5*(b+a)
+
+        x[2i-1] = xm*GL1 + xp
+        x[2i] = xm*GL2 + xp
+    end
+end
+
+function _x_eval_2pt(u)
+    res = zeros(2*(length(u)-1))
+    _x_eval_2pt!(res,u)
+    return res
+end
 
 """2-pt Gauss-Legendre quadrature for fast integrals"""
 function gauss2pt(f,a,b)
@@ -75,10 +104,15 @@ function sph_haar_index(n,ell,m)
     return CartesianIndex(n+1, sph_mode(ell,m)...)
 end
 
-function sph_haar_points(nmax,ellmax,umax)
+function sph_haar_points(nmax, ellmax, umax; method=:onept)
     ngen = _n_gens(nmax)
     xi = 0:(2.0^(-ngen)):1
-    us = @. umax*_xbari3(xi[1:end-1], xi[2:end])
+    if method==:twopt
+        edges = umax * xi
+        us = _x_eval_2pt(edges)
+    elseif method==:onept
+        us = @. umax*_xbari3(xi[1:end-1], xi[2:end])
+    end
     ths, phs = sph_points(ellmax+1)
     return (us, ths, phs)
 end
